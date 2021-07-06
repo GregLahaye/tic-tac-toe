@@ -4,6 +4,7 @@ import (
 	"encoding/json"
 	"log"
 	"net/http"
+	"strconv"
 )
 
 type Response struct {
@@ -27,11 +28,28 @@ func handler(w http.ResponseWriter, r *http.Request) {
 	}
 
 	switch r.Method {
+	case http.MethodGet:
+		handleGet(w, r)
 	case http.MethodPost:
 		handlePost(w, r)
 	case http.MethodOptions:
 		w.WriteHeader(http.StatusOK)
 	}
+}
+
+func handleGet(w http.ResponseWriter, r *http.Request) {
+	values := r.URL.Query()
+	str := values.Get("size")
+
+	size, err := strconv.Atoi(str)
+	if err != nil {
+		http.Error(w, err.Error(), http.StatusBadRequest)
+	}
+
+	board := NewBoard(size)
+	clientBoard := NewClientBoard(board)
+
+	json.NewEncoder(w).Encode(clientBoard)
 }
 
 func handlePost(w http.ResponseWriter, r *http.Request) {
@@ -48,7 +66,7 @@ func handlePost(w http.ResponseWriter, r *http.Request) {
 		http.Error(w, err.Error(), http.StatusBadRequest)
 	}
 
-	board := NewBoard(clientBoard)
+	board := NewBoardFromClient(clientBoard)
 
 	state := board.DetermineState()
 

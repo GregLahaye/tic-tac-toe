@@ -29,6 +29,19 @@ func (board Board) Draw() {
 	}
 }
 
+func NewBoard(size int) Board {
+	board := make(Board, size)
+	for row := range board {
+		board[row] = make([]State, size)
+
+		for col := range board[row] {
+			board[row][col] = EMPTY
+		}
+	}
+
+	return board
+}
+
 func NewClientBoard(board Board) ClientBoard {
 	stateToStringMap := make(map[State]string)
 	stateToStringMap[EMPTY] = " "
@@ -46,7 +59,7 @@ func NewClientBoard(board Board) ClientBoard {
 	return value
 }
 
-func NewBoard(clientBoard ClientBoard) Board {
+func NewBoardFromClient(clientBoard ClientBoard) Board {
 	stringToStateMap := make(map[string]State)
 	stringToStateMap[" "] = EMPTY
 	stringToStateMap["X"] = X

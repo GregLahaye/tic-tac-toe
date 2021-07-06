@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { Cell } from "./Cell";
 
 interface Coordinate {
@@ -7,11 +7,9 @@ interface Coordinate {
 }
 
 export const Board = () => {
-  const [board, setBoard] = useState([
-    [" ", " ", " "],
-    [" ", " ", " "],
-    [" ", " ", " "],
-  ]);
+  const DEFAULT_SIZE = 3;
+
+  const [board, setBoard] = useState<string[][]>([]);
 
   const [recommendation, setRecommendation] = useState<Coordinate>();
   const [message, setMessage] = useState("");
@@ -36,6 +34,18 @@ export const Board = () => {
     setMessage(data.state);
   };
 
+  const makeBoard = async (size: number) => {
+    const response = await fetch(`http://localhost:8080/?size=${size}`);
+    const board = await response.json();
+    setBoard(board);
+    setRecommendation(undefined);
+    setMessage("");
+  };
+
+  useEffect(() => {
+    makeBoard(DEFAULT_SIZE);
+  }, []);
+
   return (
     <div>
       <div>
@@ -59,6 +69,12 @@ export const Board = () => {
       ) : null}
 
       <p>{message}</p>
+
+      <div>
+        <button onClick={() => makeBoard(3)}>3x3</button>
+        <button onClick={() => makeBoard(4)}>4x4</button>
+        <button onClick={() => makeBoard(5)}>5x5</button>
+      </div>
     </div>
   );
 };
