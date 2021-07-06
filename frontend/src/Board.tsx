@@ -1,12 +1,20 @@
 import { useState } from "react";
 import { Cell } from "./Cell";
 
+interface Coordinate {
+  x: number;
+  y: number;
+}
+
 export const Board = () => {
   const [board, setBoard] = useState([
     [" ", " ", " "],
     [" ", " ", " "],
     [" ", " ", " "],
   ]);
+
+  const [recommendation, setRecommendation] = useState<Coordinate>();
+  const [message, setMessage] = useState("");
 
   const handleClick = async (row: number, col: number) => {
     board[row][col] = "X";
@@ -21,23 +29,36 @@ export const Board = () => {
       body: JSON.stringify(board),
     });
 
-    const updated = await response.json();
-    setBoard(updated);
+    const data = await response.json();
+    setBoard(data.board);
+
+    setRecommendation(data.recommendation);
+    setMessage(data.state);
   };
 
   return (
     <div>
-      {board.map((cells, row) => (
-        <div key={`${row}`} className="board-row">
-          {cells.map((cell, col) => (
-            <Cell
-              key={`${row},${col}`}
-              value={cell}
-              onClick={() => handleClick(row, col)}
-            ></Cell>
-          ))}
-        </div>
-      ))}
+      <div>
+        {board.map((cells, row) => (
+          <div key={`${row}`} className="board-row">
+            {cells.map((cell, col) => (
+              <Cell
+                key={`${row},${col}`}
+                value={cell}
+                onClick={() => handleClick(row, col)}
+              ></Cell>
+            ))}
+          </div>
+        ))}
+      </div>
+
+      {recommendation ? (
+        <p>
+          Best Move: ({recommendation.x}, {recommendation.y})
+        </p>
+      ) : null}
+
+      <p>{message}</p>
     </div>
   );
 };
