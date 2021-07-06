@@ -91,5 +91,5 @@ func (board Board) CheckBoardState() State {
 		}
 	}
 
-	return FULL
+	return DRAW
 }

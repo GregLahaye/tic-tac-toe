@@ -8,7 +8,7 @@ type State int
 type ClientBoard [][]string
 
 const (
-	FULL State = iota
+	DRAW State = iota
 	EMPTY
 	X
 	O

@@ -11,7 +11,7 @@ func (board Board) MaxAlphaBeta(alpha, beta int) (int, int, int) {
 		return -1, 0, 0
 	} else if result == O {
 		return 1, 0, 0
-	} else if result == FULL {
+	} else if result == DRAW {
 		return 0, 0, 0
 	}
 
@@ -52,7 +52,7 @@ func (board Board) MinAlphaBeta(alpha, beta int) (int, int, int) {
 		return -1, 0, 0
 	} else if result == O {
 		return 1, 0, 0
-	} else if result == FULL {
+	} else if result == DRAW {
 		return 0, 0, 0
 	}
 
