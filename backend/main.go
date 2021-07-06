@@ -68,6 +68,13 @@ func handlePost(w http.ResponseWriter, r *http.Request) {
 
 	board := NewBoardFromClient(clientBoard)
 
+	hash := board.Hash()
+
+	if response, exists := GetCache(hash); exists {
+		json.NewEncoder(w).Encode(response)
+		return
+	}
+
 	state := board.DetermineState()
 
 	var recommendation Coordinate
@@ -86,6 +93,8 @@ func handlePost(w http.ResponseWriter, r *http.Request) {
 
 	response := Response{result, clientBoard, recommendation}
 	json.NewEncoder(w).Encode(response)
+
+	SetCache(hash, response)
 }
 
 func main() {

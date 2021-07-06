@@ -29,6 +29,18 @@ func (board Board) Draw() {
 	}
 }
 
+func (board Board) Hash() string {
+	s := ""
+	for row := range board {
+		for col := range board {
+			state := board[row][col]
+			s += fmt.Sprintf("%d", state)
+		}
+	}
+
+	return s
+}
+
 func NewBoard(size int) Board {
 	board := make(Board, size)
 	for row := range board {
