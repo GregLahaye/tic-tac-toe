@@ -51,7 +51,6 @@ func handlePost(w http.ResponseWriter, r *http.Request) {
 	board := NewBoard(clientBoard)
 
 	state := board.DetermineState()
-	s := stateToStringMap[state]
 
 	var recommendation Coordinate
 	if state == EMPTY {
@@ -62,9 +61,12 @@ func handlePost(w http.ResponseWriter, r *http.Request) {
 		recommendation = Coordinate{x, y}
 	}
 
+	state = board.DetermineState()
+	result := stateToStringMap[state]
+
 	clientBoard = NewClientBoard(board)
 
-	response := Response{s, clientBoard, recommendation}
+	response := Response{result, clientBoard, recommendation}
 	json.NewEncoder(w).Encode(response)
 }
 
