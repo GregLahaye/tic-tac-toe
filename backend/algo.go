@@ -1,5 +1,20 @@
 package main
 
+/*
+ * O = max player
+ * X = min player
+ *
+ * MaxAlphaBeta determines the optimal move for O
+ * MinAlphaBeta determines the optimal move for X
+ *
+ * alpha = lowest value assured for max player
+ * beta = highest value assured for min player
+ *
+ * -1 = X wins
+ *  0 = draw
+ *  1 = O wins
+ */
+
 func (board Board) MaxAlphaBeta(alpha, beta int) (int, int, int) {
 	maxValue := -2
 	var x int
@@ -18,21 +33,26 @@ func (board Board) MaxAlphaBeta(alpha, beta int) (int, int, int) {
 	for row := 0; row < len(board); row++ {
 		for col := 0; col < len(board); col++ {
 			if board[row][col] == EMPTY {
+				// place O here
 				board[row][col] = O
+				// determine min value if we made this move (min value = best for X)
 				minValue, _, _ := board.MinAlphaBeta(alpha, beta)
+				// if min value is greater than current max value, it is currently the best move
 				if minValue > maxValue {
 					maxValue = minValue
 					x = row
 					y = col
 				}
+				// reset O placement
 				board[row][col] = EMPTY
-
-				if maxValue >= beta {
-					return maxValue, x, y
-				}
 
 				if maxValue > alpha {
 					alpha = maxValue
+				}
+
+				// because alpha is greater than beta, min player would never choose it, so we stop searching
+				if alpha >= beta {
+					return maxValue, x, y
 				}
 			}
 		}
@@ -68,12 +88,12 @@ func (board Board) MinAlphaBeta(alpha, beta int) (int, int, int) {
 				}
 				board[row][col] = EMPTY
 
-				if minValue <= alpha {
-					return minValue, x, y
-				}
-
 				if minValue < beta {
 					beta = minValue
+				}
+
+				if beta <= alpha {
+					return minValue, x, y
 				}
 			}
 		}
